@@ -25,7 +25,7 @@ connection.connect((err) => {
 
 function startPrompt() {
   const startQuestion = [{
-    type: "list",
+    type: "list", 
     name: "action",
     message: "what would you like to do?",
     loop: false,
