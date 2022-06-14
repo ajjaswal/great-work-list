@@ -41,3 +41,36 @@ const initialAction = async () => {
                 'Exit'
             ]
           });
+          switch (answer.action) {
+            
+            case 'View All Departments':
+                departmentView();
+                break;
+            case 'View All Roles':
+                roleView();
+                break;
+            case 'View All Employees':
+                employeeView();
+                break;
+            case 'Add Employees':
+                employeeAdd();
+                break
+            case 'Add Departments':
+                departmentAdd();
+                break
+            case 'Add Roles':
+                roleAdd();
+                break
+            case 'Update Employee Role':
+                employeeUpdate();
+                break
+            case 'Exit':
+                connection.end();
+                break;
+        };
+    } catch (err) {
+        console.log(err);
+        initialAction();
+    };
+}
+
