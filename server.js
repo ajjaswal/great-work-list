@@ -124,4 +124,132 @@ const roleView = async () => {
         initialAction();
     };
 }
+const employeeAdd = async () => {
+  try {
+      console.log('Employee Add');
+      let roles = await connection.query("SELECT * FROM role");
+      let managers = await connection.query("SELECT * FROM employee");
+      let answer = await inquirer.prompt([
+          {
+              name: 'firstName',
+              type: 'input',
+              message: 'Employee first name?'
+          },
+          {
+              name: 'lastName',
+              type: 'input',
+              message: 'Employee last name?'
+          },
+          {
+              name: 'employeeRoleId',
+              type: 'list',
+              choices: roles.map((role) => {
+                  return {
+                      name: role.title,
+                      value: role.id
+                  }
+              }),
+              message: "Employee role?"
+          },
+          {
+              name: 'employeeManagerId',
+              type: 'list',
+              choices: managers.map((manager) => {
+                  return {
+                      name: manager.first_name + " " + manager.last_name,
+                      value: manager.id
+                  }
+              }),
+              message: "Employee's Manager?"
+          }
+      ])
+      let result = await connection.query("INSERT INTO employee SET ?", {
+          first_name: answer.firstName,
+          last_name: answer.lastName,
+          role_id: (answer.employeeRoleId),
+          manager_id: (answer.employeeManagerId)
+      });
+
+      console.log(`${answer.firstName} ${answer.lastName} added successfully.\n`);
+      initialAction();
+
+  } catch (err) {
+      console.log(err);
+      initialAction();
+  };
+}
+const departmentAdd = async () => {
+  try {
+      console.log('Department Add');
+
+      let answer = await inquirer.prompt([
+          {
+              name: 'deptName',
+              type: 'input',
+              message: 'What is the name of the new department?'
+          }
+      ]);
+      let result = await connection.query("INSERT INTO department SET ?", {
+          department_name: answer.deptName
+      });
+
+      console.log(`${answer.deptName} added to departments.\n`)
+      initialAction();
+
+  } catch (err) {
+      console.log(err);
+      initialAction();
+  };
+}
+
+const roleAdd = async () => {
+  try {
+      console.log('Role Add');
+
+      let departments = await connection.query("SELECT * FROM department")
+
+      let answer = await inquirer.prompt([
+          {
+              name: 'title',
+              type: 'input',
+              message: 'What is the new role?'
+          },
+          {
+              name: 'salary',
+              type: 'input',
+              message: 'What is the salary?'
+          },
+          {
+              name: 'departmentId',
+              type: 'list',
+              choices: departments.map((departmentId) => {
+                  return {
+                      name: departmentId.department_name,
+                      value: departmentId.id
+                  }
+              }),
+              message: 'What department?',
+          }
+      ]);
+      
+      let chosenDepartment;
+      for (i = 0; i < departments.length; i++) {
+          if(departments[i].department_id === answer.choice) {
+              chosenDepartment = departments[i];
+          };
+      }
+      let result = await connection.query("INSERT INTO role SET ?", {
+          title: answer.title,
+          salary: answer.salary,
+          department_id: answer.departmentId
+      })
+
+      console.log(`${answer.title} role added successfully.\n`)
+      initialAction();
+
+  } catch (err) {
+      console.log(err);
+      initialAction();
+  };
+}
 
