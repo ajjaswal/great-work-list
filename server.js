@@ -11,3 +11,33 @@ let connection = mysql.createConnection({
     database: 'employee_DB'
 });
 
+connection.query = util.promisify(connection.query);
+
+connection.connect(function (err) {
+    if (err) throw err;
+    initialAction();
+})
+
+
+console.table(
+    "\n-- Welcome to the Employee Tracker! --\n"
+)
+
+
+const initialAction = async () => {
+    try {
+        let answer = await inquirer.prompt({
+            name: 'action',
+            type: 'list',
+            message: 'What would you like to do?',
+            choices: [
+                'View Employees',
+                'View Departments',
+                'View Roles',
+                'Add Employees',
+                'Add Departments',
+                'Add Roles',
+                'Update Employee Role',
+                'Exit'
+            ]
+          });
